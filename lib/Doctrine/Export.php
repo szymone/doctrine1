@@ -1221,7 +1221,11 @@ class Doctrine_Export extends Doctrine_Connection_Module
                  }
              }
 
-             $connection->commit();
+             // NOTE: fix issue in php 8
+             $handler = $connection->getDbh();
+             if (!($handler instanceof PDO && !$handler->inTransaction())) {
+                 $connection->commit();
+             }
          }
      }
 
